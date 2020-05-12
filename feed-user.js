@@ -115,15 +115,18 @@ feedu.feedAppendJSON = (array, path) => {
         "items": [],
         "infos": []
     };
-    try { 
-        _jbuff = JSON.parse(fs.readFileSync(path, 'utf8')); 
-    } catch (err) { 
+    if (array === undefined) throw new Error("Array or feed is undefined");
+    if (!fs.existsSync(path)) {
+        this.feedOverwriteJSON(array, path, false);
+        return;
+    } 
+
+    else {
         try {
              this.feedOverwriteJSON(array, path, false);
         } catch (error) { throw err; }
-    } 
-       
-        
+    }
+    
     array.forEach(elem => {
         if (elem instanceof Array)
             array.forEach( elem => {
@@ -163,7 +166,7 @@ feedu.feedAppendJSON = (array, path) => {
  * 
  * @param array         - Array to convert to JSON
  * @param path          - Path of the JSON file (if there in none, one will be created)
- * @param opt           - (boolean): Name your JSON as today's date
+ * @param opt           - (boolean): Name your JSON as today's date (true if not empty)
  * 
  * @callback            - Any callback function will receive the JSON file
  * 
@@ -171,7 +174,7 @@ feedu.feedAppendJSON = (array, path) => {
 feedu.feedOverwriteJSON = (array, path, opt) => {
 
     /**
-     * Checks if the opt parameter is enabled
+     * Checks if the opt parameter is enabled (enable if not empty)
      */
     var option = opt !== undefined ? true : false;
 
@@ -189,8 +192,7 @@ feedu.feedOverwriteJSON = (array, path, opt) => {
             "infos": []
         };
 
-    if (array === undefined) throw new Error("Array or feed is undefined");
-    if (!fs.existsSync(path)) this.createPath(path);  
+    if (array === undefined) throw new Error("Array or feed is undefined");  
 
     array.forEach(elem => {
         if (elem instanceof Array)
@@ -208,14 +210,16 @@ feedu.feedOverwriteJSON = (array, path, opt) => {
         _jbuff.infos.push({ "description": array.description });
     if (array.lastBuildDate)
         _jbuff.infos.push({ "lastBuildDate": array.lastBuildDate });
-
+    
     if(option) {
-        let temp = [];
-        temp = path.split('/');
-        temp.pop()
-            .push(timestampString);
-    }
-    fs.writeFileSync(path, JSON.stringify(_jbuff), 'utf8');
+
+        let _path = path.split('/');
+        if (!fs.existsSync(path)) this.createPath(path);
+        path.replace(_path.length - 1 , timestampString);
+        
+        fs.writeFileSync(path, JSON.stringify(_jbuff));
+    } else
+        fs.writeFileSync(path, JSON.stringify(_jbuff), 'utf8');
 };
 
 /**
@@ -232,12 +236,15 @@ feedu.createPath = (path) => {
     _path = path.split('/');
 
     if (!fs.existsSync(_path)) {
-        let tempPath = '.';
+        let part = '.';
         for (let i = 1; i < _path.length; i++) {
-            tempPath += "/" + _path[i];
-            console.log(tempPath);
-            if (!fs.existsSync(tempPath)) {
-                mkdirp(tempPath);
+            if (process.platform === "win32")
+                part += "\\" + _path[i];
+            else
+                part += "/" + _path[i];
+            console.log("Created folder : " + __dirname + part);
+            if (!fs.existsSync(part)) {
+                mkdirp(part);
             }
         }
     }
