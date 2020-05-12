@@ -1,0 +1,31 @@
+{
+  "name": "feed-user",
+  "version": "1.1.0",
+  "description": "This package is made for developpers that want to create a client application for RSS readers. This has been made within a school project, so the quality of the package is not as good as a senior developper.",
+  "main": "feedm.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kvntn/feedmanager.git"
+  },
+  "keywords": [
+    "rss",
+    "plugin"
+  ],
+  "author": "Kvntn / Kvendev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kvntn/feedmanager/issues"
+  },
+  "homepage": "https://github.com/Kvntn/feedmanager#readme",
+  "dependencies": {
+    "async": "^3.2.0",
+    "mkdirp": "^1.0.4",
+    "request": "^2.88.2",
+    "rss-parser": "^3.8.0",
+    "unirest": "^0.6.0"
+  },
+  "devDependencies": {}
+}
