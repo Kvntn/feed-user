@@ -14,7 +14,7 @@ npm install feed-user
 ## Usage
 
 ```javascript
-var feedu = require('feedu');
+var feedu = require('feed-user');
 
 var urls = [
     "https://stackoverflow.com/feeds",
